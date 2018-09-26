@@ -17,6 +17,8 @@ def K_Means(X,K):
 		Clusters = Assign_Data(New_Mean,X,K)
 		New_Mean = Mean_Calculator(Clusters,Total_Num_Points)
 		print()
+		print("Cluster Centers")
+		print(New_Mean)
 		print("Clusters:")
 		for Cluster_Group in list(Clusters):
 			print ("Cluster Group ",list(Clusters).index(Cluster_Group), ": " ,Cluster_Group)

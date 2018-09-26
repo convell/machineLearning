@@ -28,8 +28,12 @@ def KNN_test(X_train,Y_train,X_test,Y_test,K):
 			index_for_training_label = int(distance_array[x][1])
 			##print(Y_train[index_for_training_label])
 			label_value += Y_train[index_for_training_label][0]
-
-		#print("Test Point:", current_x_test ,", Classified as:",label_value, ", K Value of:", K, ", Actual Label:",Y_test[index_of_test][0])
+		
+		if label_value > 0:
+			label_value = 1
+		else:
+			label_value = -1
+		print("Test Point:", current_x_test ,", Classified as:",label_value, ", K Value of:", K, ", Actual Label:",Y_test[index_of_test][0])
 		if label_value == Y_test[index_of_test][0]:
 			accurate_label += 1
 
