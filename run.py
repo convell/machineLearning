@@ -1,7 +1,7 @@
 
 from kmeans import K_Means
 from knn import KNN_test
-from trees import DT_train_binary, DT_test_binary, DT_train_binary_best
+from decisiontrees import DT_train_binary, DT_test_binary, DT_train_binary_best
 import numpy as np
 import random
 import math
@@ -20,7 +20,7 @@ def main():
 
 	#K_Means
 	X = np.array([[1,0],[7,4],[9,6],[2,1],[4,8],[0,3],[13,5],[6,8],[7,3],[3,6],[2,1],[8,3],[10,2],[3,5],[5,1],[1,9],[10,3],[4,1],[6,6],[2,2]])
-	X = np.array([[0],[1],[2],[7],[8],[9],[12],[14],[15]])
+	#X = np.array([[0],[1],[2],[7],[8],[9],[12],[14],[15]])
 	K = 3
 	K_Means(X,K)
 
