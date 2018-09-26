@@ -41,8 +41,12 @@ def main():
 
 	max_depth = 4
 
-	Trained_DT = DT_train_binary(X_train_1,Y_train_1,max_depth)
-	Accuracy = DT_test_binary(X_test_1,Y_test_1,Trained_DT)
+	Trained_DT = DT_train_binary(X_train_2,Y_train_2,max_depth)
+	Accuracy = DT_test_binary(X_test_2,Y_test_2,Trained_DT)
+
+	Trained_DT = DT_train_binary_best(X_train_2, Y_train_2, X_val_2, Y_val_2)
+	Accuracy = DT_test_binary(X_test_2,Y_test_2,Trained_DT)
+	print(Accuracy)
 
 class Tree(object):
     def __init__(self):
@@ -132,29 +136,29 @@ def DT_train_binary(X,Y,max_depth):
 
 	DT.left_accuracy = accuracy_counter_left / sample_counter
 	DT.right_accuracy = accuracy_counter_right / sample_counter
-	DT = DT_Recursion_Helper(DT,X,Y,max_depth)
+	DT = DT_Recursion_Helper(DT,X,Y,max_depth -1)
 
 
 
 	return DT
 
 def DT_Recursion_Helper(DT,X,Y,max_depth):
-	
+	right_perf = False
+	left_perf = False
 	accuracy_array = []
 	num_features = len(X[0])
 	feature_counter = 0
-
+	print("hi", max_depth)
 	for index in range(num_features):
 		accuracy_array.append(0)
 
-	if (DT.accuracy == 1.0):
+	if (DT.accuracy == 1.0) or (max_depth == 0):
+		print("what 6")
 		return DT
 
-	#Build left tree, build right tree
-	print(np.array(DT.left_points).T)
+	#Build left tree
 	sample_array = np.array(DT.left_points).T[-1:]
 	left_points_transpose = np.array(DT.left_points).T[:-1]
-
 	for feature_col in left_points_transpose: #For each feature, calculate accuracy
 		sample_counter = 0
 		for sample_feature in feature_col:
@@ -174,7 +178,8 @@ def DT_Recursion_Helper(DT,X,Y,max_depth):
 			DT.left.left = 0
 			DT.left.right = 1
 			DT.left.accuracy = result
-			return DT
+			print("what 5")
+			left_perf = True
 
 		elif result == 0.0:
 			DT.left = Tree()
@@ -182,13 +187,13 @@ def DT_Recursion_Helper(DT,X,Y,max_depth):
 			DT.left.left = 1
 			DT.left.right = 0
 			DT.left.accuracy = result
-			return DT
+			print("what 4")
+			left_perf = True
 		else:
 			if result > highest_accuracy:
 				highest_accuracy = result
 
 		if highest_accuracy != DT.left_accuracy:
-			print(highest_accuracy)
 			DT.left = Tree()
 			DT.left.feature_index = accuracy_array.index(highest_accuracy)
 			DT.left.left = 0
@@ -198,21 +203,106 @@ def DT_Recursion_Helper(DT,X,Y,max_depth):
 			accuracy_counter_left = 0
 			accuracy_counter_right = 0
 
-			for sample in X:
-				if sample[DT.feature_index] == Y[sample_counter]:
-					if Y[sample_counter] == DT.left:
-						accuracy_counter_left += 1
-					else:
-						accuracy_counter_right += 1
-				if sample[DT.feature_index] == DT.left:
-					DT.left_points.append(sample)
+
+	accuracy_array = []
+	num_features = len(X[0])
+	feature_counter = 0
+
+	for index in range(num_features):
+		accuracy_array.append(0)
+
+	if (DT.accuracy == 1.0):
+		print("what 3")
+		return DT
+
+	#build right tree
+	sample_array = np.array(DT.right_points).T[-1:]
+	right_points_transpose = np.array(DT.right_points).T[:-1]
+
+	for feature_col in right_points_transpose: #For each feature, calculate accuracy
+		sample_counter = 0
+		
+		for sample_feature in feature_col:
+			if sample_feature == Y[sample_array[0][sample_counter]]:
+				accuracy_array[feature_counter] = accuracy_array[feature_counter]+1
+			sample_counter += 1
+
+		accuracy_array[feature_counter] = accuracy_array[feature_counter] / sample_counter
+		feature_counter += 1
+
+	highest_accuracy = DT.left_accuracy
+
+	for result in accuracy_array:
+		if result == 1.0:
+			DT.right = Tree()
+			DT.right.feature_index = accuracy_array.index(result)
+			DT.right.left = 0
+			DT.right.right = 1
+			DT.right.accuracy = result
+			print("what 2")
+			right_perf = True
+
+		elif result == 0.0:
+			DT.right = Tree()
+			DT.right.feature_index = accuracy_array.index(result)
+			DT.right.left = 1
+			DT.right.right = 0
+			DT.right.accuracy = result
+			right_perf = True
+		else:
+			if result > highest_accuracy:
+				highest_accuracy = result
+
+	if highest_accuracy != DT.left_accuracy:
+		DT.right = Tree()
+		DT.right.feature_index = accuracy_array.index(highest_accuracy)
+		DT.right.left = 0
+		DT.right.right = 1
+		DT.right.accuracy = highest_accuracy
+		sample_counter = 0
+		accuracy_counter_left = 0
+		accuracy_counter_right = 0
+		DT.left_points = []
+		DT.right_points = []
+
+		for sample in X:
+			if sample[DT.feature_index] == Y[sample_counter]:
+				if Y[sample_counter] == DT.left:
+					accuracy_counter_left += 1
 				else:
-					DT.right_points.append(sample)
+					DT.left_points.append(sample)
+			else:
+				DT.right_points.append(sample)
 
-				sample_counter += 1
+			sample_counter += 1
 
+	if not left_perf == True:
+		DT.left = DT_Recursion_Helper(DT.left,X,Y,max_depth-1)
+
+	if not right_perf == True:
+		DT.right = DT_Recursion_Helper(DT.left,X,Y,max_depth-1)
 	DT.accuracy = DT.left_accuracy + DT.right_accuracy
 	return DT
+
+
+def DT_train_binary_best(X_train, Y_train, X_val, Y_val):
+
+	Trained_DT = DT_train_binary(X_train,Y_train,max_depth)
+
+	for Left_Bound in DT.left:
+		if type(Left_Bound) == int:
+			break;
+		for Right_Bound in DT.right:
+			if type(Right_Boundi) == int:
+				break;
+			
+
+
+
+
+	return DT
+
+
 
 def Print_DT(DT):
 	print("Feature:", DT.feature_index, "Left:")
@@ -231,7 +321,7 @@ def Print_DT(DT):
 
 
 def DT_test_binary(X,Y,DT):
-	Print_DT(DT)
+
 
 	accuracy_counter = 0
 	sample_counter = 0
@@ -249,16 +339,13 @@ def DT_test_binary(X,Y,DT):
 
 def DT_test_binary_helper(sample,DT):
 	accuracy_counter = 0
-	print(DT.left, DT.right)
 	if sample[DT.feature_index] == 0:
 		if type(DT.left) == int:
-			print("Return: ", DT.left)
 			return DT.left
 		else:
 			return DT_test_binary_helper(sample,DT.left)
 	else:
 		if type(DT.right) == int:
-			print("Return: ", DT.right)
 			return DT.right
 		else:
 			return DT_test_binary_helper(sample,DT.right)
