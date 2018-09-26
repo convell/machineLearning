@@ -1,7 +1,6 @@
 import numpy as np
 import random
 import math
-
 class Tree(object):
     def __init__(self):
         self.left = None
@@ -272,7 +271,7 @@ def DT_train_binary_best_helper(X, Y, DT, accuracy_array,counter = 0):
 		temp_left.append(DT_train_binary_best_helper(X, Y, DT.left, accuracy_array , counter + 1))
 	else:
 		accuracy_array[counter].append((DT_test_binary(X,Y,DT)))
-		return(accuracy_array)
+	
 
 	if not type(DT.right) == int:
 		if DT_test_binary(X,Y,DT.right) < .5:
@@ -282,7 +281,7 @@ def DT_train_binary_best_helper(X, Y, DT, accuracy_array,counter = 0):
 		temp_right.append(DT_train_binary_best_helper(X, Y, DT.right, accuracy_array , counter + 1))
 	else:
 		accuracy_array[counter].append(DT_test_binary(X,Y,DT))
-		return(accuracy_array)
+		
 
 	temp = {"left":temp_left,"right":temp_right}
 	return(DT)
@@ -302,7 +301,6 @@ def Print_DT(DT):
 
 
 def Clear_DT_Points(DT):
-	
 	
 	if not type(DT.left) == int:
 		DT.left_points = []

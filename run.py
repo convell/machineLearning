@@ -1,10 +1,9 @@
-
-from kmeans import K_Means
-from knn import KNN_test
-from decisiontrees import DT_train_binary, DT_test_binary, DT_train_binary_best
 import numpy as np
 import random
 import math
+from kmeans import K_Means
+from knn import KNN_test
+from decisiontrees import DT_train_binary, DT_test_binary, DT_train_binary_best
 
 def main():
 
@@ -13,16 +12,16 @@ def main():
 	Y_train = np.array([[-1],[-1],[1],[-1],[1],[-1],[1],[-1],[1],[-1],[1],[-1],[1],[1]])
 	X_test = np.array([[1,1], [2,1], [0,10], [10,10], [5,5], [3,10], [9,4], [6,2], [2,2], [8,7]])
 	Y_test = np.array([[1], [-1], [1], [-1], [1], [-1], [1], [-1], [1], [-1]])
-	K = 1
+	K = 5
 
-	Accuracy = KNN_test(X_train,Y_train,X_test,Y_test,K)
-	print("KNN Accuracy: ", Accuracy, "%")
+	#Accuracy = KNN_test(X_train,Y_train,X_test,Y_test,K)
+	##print("KNN Accuracy: ", Accuracy, "%")
 
 	#K_Means
 	X = np.array([[1,0],[7,4],[9,6],[2,1],[4,8],[0,3],[13,5],[6,8],[7,3],[3,6],[2,1],[8,3],[10,2],[3,5],[5,1],[1,9],[10,3],[4,1],[6,6],[2,2]])
-	#X = np.array([[0],[1],[2],[7],[8],[9],[12],[14],[15]])
+	X = np.array([[0],[1],[2],[7],[8],[9],[12],[14],[15]])
 	K = 3
-	K_Means(X,K)
+	#K_Means(X,K)
 
 	# Training Set 1:
 	X_train_1 = np.array([[0,1], [0,0], [1,0], [0,0], [1,1]])
@@ -47,13 +46,11 @@ def main():
 
 	Trained_DT = DT_train_binary(X_train_2,Y_train_2,max_depth)
 	Accuracy = DT_test_binary(X_test_2,Y_test_2,Trained_DT)
+	print(Accuracy)
 
 	Trained_DT = DT_train_binary_best(X_train_2, Y_train_2, X_val_2, Y_val_2)
 	Accuracy = DT_test_binary(X_test_2,Y_test_2,Trained_DT)
-
-
-
-
+	print(Accuracy)
 
 if __name__ == "__main__":
     main()
