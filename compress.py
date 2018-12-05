@@ -56,4 +56,4 @@ PCS_2 = pca.find_pcs(cov_2)
 
 L2, PCS_2 = PCS_2
 
-print(pca.project_data(Z_2, PCS_2, L2, 1, 0))
+print(pca.project_data(Z_2, PCS_2, L2, 0, 0.3))

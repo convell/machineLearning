@@ -23,7 +23,7 @@ def compute_covariance_matrix(Z):
 def find_pcs(COV):
 	return np.linalg.eig(COV)
 
-def project_data(Z, PCS, L, k, var=1):
+def project_data(Z, PCS, L, k, var):
 	if k != 0: 
 		print(Z.shape)
 		Eigenvectors = PCS.T #first k elements
@@ -36,4 +36,13 @@ def project_data(Z, PCS, L, k, var=1):
 	if var != 0:
 		var_projected = [(i / sum(L)) for i in L]
 		var_projected_array = np.cumsum(var_projected)
-		var_projected_array
+		k = 1
+		print(var_projected_array)
+		for variance in var_projected_array:
+			if var < variance:
+				print(variance)
+				Eigenvectors = PCS.T
+				Eigenvectors = Eigenvectors[:k]
+				projected = Z.dot(Eigenvectors.T)
+				return projected
+			k += 1
