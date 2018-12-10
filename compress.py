@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 def load_data(input_dir):
 	files = os.listdir(input_dir)
+	files.sort(key = lambda x: int(x[:5]))
 	input_array = []
 	for file in files:
 		input_array.append(plt.imread(input_dir+file).flatten())
@@ -22,7 +23,6 @@ def compress_images(DATA,k):
 	PCS = pca.find_pcs(cov)
 	L, PCS_1 = PCS
 	projected_data = pca.project_data(Z, PCS_1, L, k, 0)
-	print(projected_data.shape)
 	PCS_1=PCS_1.T
 	PCS_1 = PCS_1[:k]
 	print(PCS_1.shape)
@@ -43,7 +43,7 @@ def compress_images(DATA,k):
 
 cwd = os.getcwd() +"/Data/Train/"
 data = load_data(cwd)
-compress_images(data,500)
+compress_images(data,2)
 
 
 Z_2= pca.compute_Z()
